@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  ojs:
+    build: .
+    container_name: ojs
+    ports:
+      - "8080:80"  # Map the container port to the host port
+    volumes:
+      - ojs_data:/var/www/html  # Mount the OJS directory
+    depends_on:
+      - db
+    networks:
+      - ojs_network
+
+  db:
+    image: mysql:5.7
+    container_name: ojs-db
+    environment:
+      MYSQL_ROOT_PASSWORD: example  # Set a root password
+      MYSQL_DATABASE: ojs_database  # Set the OJS database name
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - ojs_network
+
+networks:
+  ojs_network:
+    driver: bridge
+
+volumes:
+  ojs_data:
+  db_data:
+    driver: local
